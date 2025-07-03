@@ -12,6 +12,19 @@ def save_highscore(score):
     with open("highscore.txt", "w") as file:
         file.write(str(score))
 
+def show_history():
+    print("\n📜 Lịch sử chơi gần đây:")
+    if not os.path.exists("log.txt"):
+        print("📂 Chưa có lịch sử chơi.")
+    else:
+        with open("log.txt", "r", encoding="utf-8") as file:
+            lines = file.readlines()
+            if not lines:
+                print("📂 Lịch sử trống.")
+            else:
+                for line in lines[-5:]:
+                    print("•", line.strip())
+
 def play_game():
     secret = random.randint(1, 100)
     guess = None
@@ -57,6 +70,9 @@ def play_game():
 
     with open("log.txt", "a", encoding="utf-8") as log_file:
         log_file.write(result)
+
+# 📜 Hiển thị lịch sử trước khi bắt đầu chơi
+show_history()
 
 # 🔁 Vòng lặp chơi lại
 while True:
