@@ -1,5 +1,6 @@
 import random
 import os
+import datetime
 
 def load_highscore():
     if os.path.exists("highscore.txt"):
@@ -17,7 +18,7 @@ def play_game():
     attempts = 0
     max_attempts = 7
 
-    print("🎯 Tôi đã chọn một số từ 1 đến 100.")
+    print("\n🎯 Tôi đã chọn một số từ 1 đến 100.")
     print(f"Bạn có {max_attempts} lượt để đoán đúng.")
 
     while guess != secret and attempts < max_attempts:
@@ -34,11 +35,11 @@ def play_game():
 
                 highscore = load_highscore()
                 if highscore is None or attempts < highscore:
-                    print("🏆 Chúc mừng! Bạn vừa lập kỷ lục mới!")
+                    print("🏆 Chúc mừng! Bạn lập kỷ lục mới!")
                     save_highscore(attempts)
                 else:
                     print(f"📈 Kỷ lục hiện tại: {highscore} lượt.")
-                return
+                break
 
         except ValueError:
             print("⚠️ Vui lòng nhập một số hợp lệ!")
@@ -47,10 +48,20 @@ def play_game():
         print("💥 Bạn đã hết lượt đoán. Trò chơi kết thúc!")
         print(f"📌 Số đúng là: {secret}")
 
-# Bắt đầu vòng lặp chơi lại
+    # 📜 Ghi lịch sử chơi
+    timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    if guess == secret:
+        result = f"[{timestamp}] ✅ Thắng sau {attempts} lượt.\n"
+    else:
+        result = f"[{timestamp}] ❌ Thua – số đúng là {secret}.\n"
+
+    with open("log.txt", "a", encoding="utf-8") as log_file:
+        log_file.write(result)
+
+# 🔁 Vòng lặp chơi lại
 while True:
     play_game()
-    choice = input("\n🔁 Bạn có muốn chơi lại không? (y/n): ").strip().lower()
-    if choice != 'y':
+    again = input("\n🔁 Bạn có muốn chơi lại không? (y/n): ").strip().lower()
+    if again != 'y':
         print("👋 Cảm ơn bạn đã chơi! Hẹn gặp lại.")
         break
